@@ -16,5 +16,5 @@ spec:
       repoURL: 'https://charts.bitnami.com/bitnami'
       targetRevision: 16.11.2
     - ref: values
-      repoURL: 'https://github.com/puzzle/goff-gh-exmaple.git'
+      repoURL: 'https://github.com/puzzle/goff-gh-example.git'
       targetRevision: main
