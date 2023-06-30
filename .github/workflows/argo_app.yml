@@ -38,8 +38,8 @@ jobs:
           path: target
           ref: ${{ github.event.pull_request.base.ref }}
       - run: |
-         goff argocd app "./source/argocd" --repo-server="reposerver:8081" --output-dir=/tmp/source/
-         goff argocd app "./target/argocd" --repo-server="reposerver:8081" --output-dir=/tmp/target/
+         goff argocd app "./source/argocd/app" --repo-server="reposerver:8081" --output-dir=/tmp/source/
+         goff argocd app "./target/argocd/app" --repo-server="reposerver:8081" --output-dir=/tmp/target/
          goff diff "/tmp/source" "/tmp/target" --output-dir .
       - name: comment PR
         uses: machine-learning-apps/pr-comment@master
