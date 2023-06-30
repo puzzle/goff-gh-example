@@ -1,11 +1,11 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: goff-test
-  namespace: openshift-gitops
+  name: goff-helm-redis
+  namespace: argocd
 spec:
   destination:
-    namespace: pitc-cschlatter
+    namespace: pitc-goff
     server: 'https://kubernetes.default.svc'
   project: default
   sources:
@@ -16,5 +16,5 @@ spec:
       repoURL: 'https://charts.bitnami.com/bitnami'
       targetRevision: 16.11.2
     - ref: values
-      repoURL: 'https://github.com/schlapzz/goff-github.git'
+      repoURL: 'https://github.com/puzzle/goff-github.git'
       targetRevision: main
