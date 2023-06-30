@@ -2,7 +2,8 @@ on:
   pull_request:
     types: [opened, synchronize]
     paths: 
-     - "argocd/**"
+     - "argocd/app/**"
+
 
 permissions:
   contents: read
@@ -11,11 +12,21 @@ permissions:
 name: Diff GitOps Environments
 
 jobs:
-  diff-env:
+  diff-env-argo:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    services:
+      reposerver:
+        image: quay.io/puzzle/argocd-repo-server:latest
+        ports:
+          - "8081:8081"
+        options: >-
+          --health-cmd "nc -z localhost 8081"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     container:
-      image: registry.puzzle.ch/cicd/goff:latest
+      image: quay.io/puzzle/goff:latest
     steps:
       - name: Checkout PR
         uses: actions/checkout@v3
@@ -27,9 +38,9 @@ jobs:
           path: target
           ref: ${{ github.event.pull_request.base.ref }}
       - run: |
-         goff kustomize build ./source/argocd --output-dir /tmp/source/out
-         goff kustomize build ./target/argocd --output-dir /tmp/target/out
-         goff diff "/tmp/source" "/tmp/target" --title=Preview --output-dir .
+         goff argocd app "./source/argocd" --repo-server="reposerver:8081" --output-dir=/tmp/source/
+         goff argocd app "./target/argocd" --repo-server="reposerver:8081" --output-dir=/tmp/target/
+         goff diff "/tmp/source" "/tmp/target" --output-dir .
       - name: comment PR
         uses: machine-learning-apps/pr-comment@master
         env:
